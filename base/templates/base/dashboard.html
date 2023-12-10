@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<div>
+
+    <div>
+        <h3>Total Inventario: n</h3>
+        {% for product in products %}
+            <div>
+                <h5>{{product.id}} - {{product.type}}</h5>
+            </div>
+
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

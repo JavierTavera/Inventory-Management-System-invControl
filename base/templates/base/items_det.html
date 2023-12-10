@@ -1,0 +1,26 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <h1>Detalle ítems</h1>
+<div>
+
+    <div>
+            <div>
+                ID: {{items_id.id}}
+            </div>
+            <div>
+                Nombre: {{items_id.name}}
+            </div>
+            <div>
+                Lote: {{items_id.lote}}
+            </div>
+            <div>
+                Stock: {{items_id.stock}}
+            </div>
+            <div>
+                Fecha recepción: {{items_id.stock}}
+            </div>
+
+    </div>
+</div>
+{% endblock content %}
