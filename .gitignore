@@ -1,3 +1,5 @@
 .env
 inv-control/
 .idea/
+**/pycache/
+*.pyc
