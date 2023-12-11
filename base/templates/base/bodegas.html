@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Bodegas</h1>
+<div>
+    <br>
+    <div><h4>Listado de bodegas</h4></div>
+    <br>
+    <div>
+        {% for bodega in las_bodegas %}
+            <div>
+                <h5>{{bodega.id}} - {{bodega.nombre}}</h5>
+            </div>
+
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock content %}

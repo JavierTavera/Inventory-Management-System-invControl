@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Bodega
 
 items_p = [
     {'id': 1, 'name': 'Prótesis 1', 'lote': 'LOTE1', 'type': 'Prótesis', 'stock': 5, 'fecha_rec': '20-11-2023'},
@@ -15,6 +16,11 @@ products = [
     {'id': 3, 'type': 'Prótesis', 'SKU': 'SKU3', 'lote': 'LOTE2'},
     {'id': 4, 'type': 'Cinta', 'SKU': 'SKU4', 'lote': 'LOTE4'}
 ]
+
+# las_bodegas = [
+#     {'id': 1, 'nombre': 'Bogotá'},
+#     {'id': 2, 'nombre': 'Medellín'}
+# ]
 def home(request):
     return render(request, 'base/login.html')
 
@@ -40,10 +46,14 @@ def items(request):
     context = {'items_p': items_p}
     return render(request, 'base/items.html', context)
 
+def bodegas(request):
+    las_bodegas = Bodega.objects.all()
+    context = {'las_bodegas': las_bodegas}
+    return render(request, 'base/bodegas.html', context)
+
+
 # De aquí para abajo son ejemplo
 
-def bodegas(request):
-    return render(request, 'base/DeEjemplo/bodegas.html')
 
 def transferencias_stock(request):
     return render(request, 'base/DeEjemplo/transferencias_stock.html')
