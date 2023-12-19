@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Proveedores</h1>
+<div>
+    <br>
+    <div><h4>Listado de Proveedores</h4></div>
+    <br>
+    <div>
+        {% for proveedor in los_proveedores %}
+            <div>
+                <h5>{{proveedor.id}} - {{proveedor.nombre}}</h5>
+            </div>
+
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock content %}

@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Bodega
+from .models import Proveedor
+from .forms import ReferenciaForm
 
 items_p = [
     {'id': 1, 'name': 'Prótesis 1', 'lote': 'LOTE1', 'type': 'Prótesis', 'stock': 5, 'fecha_rec': '20-11-2023'},
@@ -17,9 +19,9 @@ products = [
     {'id': 4, 'type': 'Cinta', 'SKU': 'SKU4', 'lote': 'LOTE4'}
 ]
 
-# las_bodegas = [
-#     {'id': 1, 'nombre': 'Bogotá'},
-#     {'id': 2, 'nombre': 'Medellín'}
+# los_proveedores = [
+#     {'id': 1, 'nombre': 'Europa'},
+#     {'id': 2, 'nombre': 'USA'}
 # ]
 def home(request):
     return render(request, 'base/login.html')
@@ -47,12 +49,34 @@ def items(request):
     return render(request, 'base/items.html', context)
 
 def bodegas(request):
-    las_bodegas = Bodega.objects.all()
+    las_bodegas = Bodega.objects.all().order_by('id')
     context = {'las_bodegas': las_bodegas}
     return render(request, 'base/bodegas.html', context)
 
+def proveedores(request):
+    los_proveedores = Proveedor.objects.all().order_by('id')
+    context = {'los_proveedores': los_proveedores}
+    return render(request, 'base/proveedores.html', context)
 
-# De aquí para abajo son ejemplo
+def ingreso_productos(request):
+    return render(request, 'base/ingreso_productos.html')
+
+def ingreso_manual(request):
+    return render(request, 'base/ingreso_productos/ingreso_manual.html')
+
+def ingreso_referencias(request):
+    current_user = request.user if request.user.is_authenticated else None
+    form = ReferenciaForm(initial={'usuario': current_user})
+    if request.method == 'POST':
+        # print(request.POST)
+        form = ReferenciaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('ingreso_referencias')
+    context = {'form': form}
+    return render(request, 'base/ingreso_referencias.html', context)
+
+# De aquí para abajo son ejemplos
 
 
 def transferencias_stock(request):
@@ -63,6 +87,3 @@ def ajuste_de_inventario(request):
 
 def ordenes_de_ventas(request):
     return render(request, 'base/DeEjemplo/ordenes_de_ventas.html')
-
-def ordenes_de_compra(request):
-    return render(request, 'base/DeEjemplo/ordenes_de_compra.html')

@@ -1,0 +1,11 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Ingresar Productos</h1>
+<div>
+    <br>
+    <div><a href="{% url 'ingreso_manual' %}" class="btn btn-primary">Ingreso Manual</a></div>
+    <br>
+    <div><a href="#" class="btn btn-primary">Ingreso con código QR</a></div>
+</div>
+{% endblock content %}

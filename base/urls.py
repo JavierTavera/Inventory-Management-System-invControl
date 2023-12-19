@@ -8,9 +8,12 @@ urlpatterns = [
     path('items/<str:pk>/', views.items_pk, name="items_pk"),
     path('items/', views.items, name="items"),
     path('bodegas/', views.bodegas),
+    path('proveedores/', views.proveedores),
+    path('ingreso_productos/', views.ingreso_productos),
+    path('ingreso_productos/ingreso_manual/', views.ingreso_manual, name="ingreso_manual"),
+    path('ingreso_referencias/', views.ingreso_referencias, name="ingreso_referencias"),
 
     path('transferencias_stock/', views.transferencias_stock),
     path('ajuste_de_inventario/', views.ajuste_de_inventario),
     path('ordenes_de_ventas/', views.ordenes_de_ventas),
-    path('ordenes_de_compra/', views.ordenes_de_compra),
 ]
