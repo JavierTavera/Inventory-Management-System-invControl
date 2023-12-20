@@ -132,10 +132,24 @@
         </a>
       </li>
       <li>
-        <a href="/ingreso_productos/" class="nav-link text-white">
+        <a href="#" class="nav-link text-white" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
           <svg class="bi pe-none me-2" width="16" height="16"></svg>
           Ingreso Productos
         </a>
+        <div class="collapse" id="home-collapse">
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li><svg class="bi pe-none me-2" width="48" height="16"></svg>
+              <a href="/ingreso_productos/1/" class="text-white">Prótesis inflable</a></li>
+            <li><svg class="bi pe-none me-2" width="48" height="16"></svg>
+              <a href="/ingreso_productos/2/" class="text-white">Prótesis maleable</a></li>
+            <li><svg class="bi pe-none me-2" width="48" height="16"></svg>
+              <a href="/ingreso_productos/3/" class="text-white">Esfínter artificial</a></li>
+            <li><svg class="bi pe-none me-2" width="48" height="16"></svg>
+              <a href="/ingreso_productos/4/" class="text-white">Prótesis testicular</a></li>
+            <li><svg class="bi pe-none me-2" width="48" height="16"></svg>
+              <a href="/ingreso_productos/5/" class="text-white">Cintas</a></li>
+          </ul>
+        </div>
       </li>
       <li>
         <a href="{% url 'ingreso_referencias' %}" class="nav-link text-white">
@@ -280,7 +294,7 @@
   </div>
 
 </main>
-
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 </body>
 </html>

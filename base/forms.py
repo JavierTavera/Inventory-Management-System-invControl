@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, Select
-from .models import Referencia
+from .models import Referencia, Producto
 
 class ReferenciaForm(ModelForm):
 
@@ -11,7 +11,8 @@ class ReferenciaForm(ModelForm):
             'IdReferencia': 'Código Referencia',
             'tipo': 'Tipo de Producto',
             'nombre': 'Nombre del Producto (Opcional)',
-            'descripcion': 'Descripción (Opcional)'
+            'descripcion': 'Descripción (Opcional)',
+            'IdProveedor': 'Proveedor'
         }
         widgets = {
             'IdReferencia': TextInput(attrs={
@@ -20,6 +21,10 @@ class ReferenciaForm(ModelForm):
                 'placeholder': 'Código de referencia'
             }),
             'tipo': Select(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;'
+            }),
+            'IdProveedor': Select(attrs={
                 'class': "form-control",
                 'style': 'max-width: 300px;'
             }),
@@ -37,3 +42,10 @@ class ReferenciaForm(ModelForm):
                 'hidden': ''
             })
         }
+
+
+class ProductoForm(ModelForm):
+
+    class Meta:
+        model = Producto
+        fields = '__all__'

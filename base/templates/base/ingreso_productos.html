@@ -1,11 +1,16 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<h1>Ingresar Productos</h1>
+
 <div>
+    <h2>Seleccione código</h2>
     <br>
-    <div><a href="{% url 'ingreso_manual' %}" class="btn btn-primary">Ingreso Manual</a></div>
+    <div class="alert alert-primary w-50 p-3" role="alert">
+    Seleccione el código de <strong>{{las_referencias.0.tipo}}</strong> que desea ingresar
+    </div>
     <br>
-    <div><a href="#" class="btn btn-primary">Ingreso con código QR</a></div>
+    {% for ref in las_referencias %}
+    <div>{{ref}} <a href="/ingreso_productos/ingreso_manual/{{ref.id}}" class="link-underline-primary">Ingreso manual</a> | Ingreso con código QR</div>
+    {% endfor %}
 </div>
 {% endblock content %}

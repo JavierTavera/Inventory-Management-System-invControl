@@ -1,14 +1,15 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<h1>Ingresar Manual de Productos</h1>
+<h1>Ingreso manual de productos</h1>
 <div>
     <form method="POST" action="">
         {% csrf_token %}
-
+        <div>
+        {{form}}
+        </div>
+        <br>
         <input type="submit" value="Ingresar" class="btn btn-primary">
     </form>
-    <br>
-    <div>Lote</div>
 </div>
 {% endblock content %}
