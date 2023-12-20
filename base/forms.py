@@ -49,3 +49,41 @@ class ProductoForm(ModelForm):
     class Meta:
         model = Producto
         fields = '__all__'
+        labels = {
+            'IdReferencia': '',
+            'IdEstado_producto': '',
+            'IdBodega': '',
+            'codigoQR': 'codigo QR (Opcional)',
+            'lote': 'Lote',
+            'fecha_vencimiento': 'Fecha vencimiento (DD-MM-AAAA) (Opcional)',
+            'usuario': ''
+        }
+        widgets = {
+            'IdReferencia': TextInput(attrs={
+                'hidden': ''
+            }),
+            'IdEstado_producto': Select(attrs={
+                'hidden': ''
+            }),
+            'IdBodega': Select(attrs={
+                'hidden': ''
+            }),
+            'codigoQR': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'codigo QR'
+            }),
+            'lote': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Lote'
+            }),
+            'fecha_vencimiento': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Ej: 20-12-2026'
+            }),
+            'usuario': Select(attrs={
+                'hidden': ''
+            })
+        }

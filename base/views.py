@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Bodega, Proveedor, Referencia, Producto
+from .models import Bodega, Proveedor, Referencia, TipoProducto
 from .forms import ReferenciaForm, ProductoForm
 
 items_p = [
@@ -58,29 +58,50 @@ def proveedores(request):
     return render(request, 'base/proveedores.html', context)
 
 def ingreso_productos(request, pk):
+    exito=False
+    if '_' in pk:
+        mk = pk.split('_')
+        pk = mk[0]
+        exito=True
     las_referencias = Referencia.objects.all().filter(tipo=pk)
     ref_bool = False
-    #print(las_referencias)
     if int(pk)<=5 and int(pk)>=1:
         ref_bool = True
-        #print(las_referencias[0])
     if ref_bool:
-        context = {'las_referencias': las_referencias, 'el_tipo_producto': las_referencias[0]}
+        context = {'las_referencias': las_referencias, 'el_tipo_producto': las_referencias[0], 'obteniendo_id': pk, 'exito': exito}
         return render(request, 'base/ingreso_productos.html', context)
     else:
         return render(request, 'base/productos.html')
 
 def ingreso_manual(request, pk):
+    mk=pk.split('_')
+    pk=mk[1]
+    # obteniendo_record = TipoProducto.objects.get(tipo=mk[0])
+    # obteniendo_id = obteniendo_record.id
     current_user = request.user if request.user.is_authenticated else None
-    form = ProductoForm(initial={'usuario': current_user, 'IdReferencia': pk})
+    form = ProductoForm(initial={'usuario': current_user, 'IdReferencia': pk, 'IdEstado_producto': 4, 'IdBodega': 1})
     if request.method == 'POST':
-        # print(request.POST)
         form = ProductoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('ingreso_manual')
+            return redirect('/ingreso_productos/'+str(mk[0])+'_/')
     context = {'form': form}
     return render(request, 'base/ingreso_productos/ingreso_manual.html', context)
+
+def ingreso_qr(request, pk):
+    mk=pk.split('_')
+    pk=mk[1]
+    # obteniendo_record = TipoProducto.objects.get(tipo=mk[0])
+    # obteniendo_id = obteniendo_record.id
+    current_user = request.user if request.user.is_authenticated else None
+    form = ProductoForm(initial={'usuario': current_user, 'IdReferencia': pk, 'IdEstado_producto': 4, 'IdBodega': 1})
+    if request.method == 'POST':
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/ingreso_productos/'+str(mk[0])+'_/')
+    context = {'form': form}
+    return render(request, 'base/ingreso_productos/ingreso_qr.html', context)
 
 def ingreso_referencias(request):
     current_user = request.user if request.user.is_authenticated else None

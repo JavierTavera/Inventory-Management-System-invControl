@@ -60,7 +60,7 @@ class Producto(models.Model):
     actualizado = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class Transacciones(models.Model):
     IdProducto = models.ForeignKey(Producto, on_delete=models.SET_NULL, null=True)

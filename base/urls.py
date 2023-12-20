@@ -11,6 +11,7 @@ urlpatterns = [
     path('proveedores/', views.proveedores),
     path('ingreso_productos/<str:pk>/', views.ingreso_productos, name="ingreso_productos"),
     path('ingreso_productos/ingreso_manual/<str:pk>/', views.ingreso_manual, name="ingreso_manual"),
+    path('ingreso_productos/ingreso_qr/<str:pk>/', views.ingreso_qr, name="ingreso_qr"),
     path('ingreso_referencias/', views.ingreso_referencias, name="ingreso_referencias"),
 
     path('transferencias_stock/', views.transferencias_stock),

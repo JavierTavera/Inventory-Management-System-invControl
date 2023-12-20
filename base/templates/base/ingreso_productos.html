@@ -8,9 +8,14 @@
     <div class="alert alert-primary w-50 p-3" role="alert">
     Seleccione el código de <strong>{{las_referencias.0.tipo}}</strong> que desea ingresar
     </div>
+    {% if exito %}
+    <div class="alert alert-success w-50 p-3" role="alert">
+      Producto ingresado con <strong>éxito</strong>
+    </div>
+    {% endif %}
     <br>
     {% for ref in las_referencias %}
-    <div>{{ref}} <a href="/ingreso_productos/ingreso_manual/{{ref.id}}" class="link-underline-primary">Ingreso manual</a> | Ingreso con código QR</div>
+    <div>{{ref}} <a href="/ingreso_productos/ingreso_manual/{{obteniendo_id}}_{{ref.id}}" class="link-underline-primary">Ingreso manual</a> | <a href="/ingreso_productos/ingreso_qr/{{obteniendo_id}}_{{ref.id}}" class="link-underline-primary">Ingreso con código QR</a></div>
     {% endfor %}
 </div>
 {% endblock content %}
