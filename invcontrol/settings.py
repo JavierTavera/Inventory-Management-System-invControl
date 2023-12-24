@@ -26,7 +26,7 @@ SECRET_KEY = config("SECRET_KEY") # this is to replace the secret key you cut aw
 DEBUG = True
 
 # ALLOWED_HOSTS = ["192.168.0.28", "127.0.0.1"]
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["192.168.20.50", "127.0.0.1"]
 
 
 # Application definition

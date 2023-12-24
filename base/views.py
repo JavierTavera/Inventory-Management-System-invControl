@@ -94,6 +94,7 @@ def ingreso_qr(request, pk):
     # obteniendo_record = TipoProducto.objects.get(tipo=mk[0])
     # obteniendo_id = obteniendo_record.id
     current_user = request.user if request.user.is_authenticated else None
+    print(current_user)
     form = ProductoForm(initial={'usuario': current_user, 'IdReferencia': pk, 'IdEstado_producto': 4, 'IdBodega': 1})
     if request.method == 'POST':
         form = ProductoForm(request.POST)
