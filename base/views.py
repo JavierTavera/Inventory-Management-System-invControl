@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Bodega, Proveedor, Referencia, TipoProducto
 from .forms import ReferenciaForm, ProductoForm
+from django.core.cache import cache
 
 items_p = [
     {'id': 1, 'name': 'Prótesis 1', 'lote': 'LOTE1', 'type': 'Prótesis', 'stock': 5, 'fecha_rec': '20-11-2023'},
@@ -81,11 +82,27 @@ def ingreso_manual(request, pk):
     current_user = request.user if request.user.is_authenticated else None
     form = ProductoForm(initial={'usuario': current_user, 'IdReferencia': pk, 'IdEstado_producto': 4, 'IdBodega': 1})
     if request.method == 'POST':
-        form = ProductoForm(request.POST)
+
+        la_cantidad_manual = int(request.POST.get('cantidad_manual', ''))
+            # la_cantidad_manual_nro = int(la_cantidad_manual)
+            # cache.set('cantidad_cached', la_cantidad_manual_nro, 40)
+            # print(cache.get('cantidad_cached'))
+
+        new_request = request.POST.copy()
+        new_request.pop('cantidad_manual')
+        form = ProductoForm(new_request)    
         if form.is_valid():
-            form.save()
+            # cada instancia de formulario sólo puede guardar una vez
+            instance = form.save(commit=False)
+            for i in range(la_cantidad_manual):
+                instance.id = None
+                instance.save()
+            # form.save()
+            
             return redirect('/ingreso_productos/'+str(mk[0])+'_/')
-    context = {'form': form}
+    else:
+        la_cantidad_manual = 0
+    context = {'form': form, 'cantidad_ingresos': la_cantidad_manual}
     return render(request, 'base/ingreso_productos/ingreso_manual.html', context)
 
 def ingreso_qr(request, pk):
