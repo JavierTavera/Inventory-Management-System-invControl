@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Transferencias Stock</h1>
+<div>
+
+    <div>Estoy en bodega {{la_bodega}}</div>
+    <div>Los productos:</div>
+    <div>{% for prod in los_productos %}
+        <div>Producto QR: {{prod.codigoQR}} - Lote: {{prod.lote}} - Estado: {{prod.IdEstado_producto}}</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

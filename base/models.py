@@ -7,6 +7,7 @@ import uuid
 class Bodega(models.Model):
     nombre = models.CharField(max_length=80)
     desc = models.CharField(max_length=200, null=True, blank=True)
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     activo = models.BooleanField(default=True)
 
     def __str__(self):

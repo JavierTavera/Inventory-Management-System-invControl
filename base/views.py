@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Bodega, Proveedor, Referencia, TipoProducto
+from .models import Bodega, Proveedor, Referencia, Producto
 from .forms import ReferenciaForm, ProductoForm
 from django.core.cache import cache
 
@@ -82,12 +82,10 @@ def ingreso_manual(request, pk):
     current_user = request.user if request.user.is_authenticated else None
     form = ProductoForm(initial={'usuario': current_user, 'IdReferencia': pk, 'IdEstado_producto': 4, 'IdBodega': 1})
     if request.method == 'POST':
-
         la_cantidad_manual = int(request.POST.get('cantidad_manual', ''))
             # la_cantidad_manual_nro = int(la_cantidad_manual)
             # cache.set('cantidad_cached', la_cantidad_manual_nro, 40)
             # print(cache.get('cantidad_cached'))
-
         new_request = request.POST.copy()
         new_request.pop('cantidad_manual')
         form = ProductoForm(new_request)    
@@ -98,7 +96,6 @@ def ingreso_manual(request, pk):
                 instance.id = None
                 instance.save()
             # form.save()
-            
             return redirect('/ingreso_productos/'+str(mk[0])+'_/')
     else:
         la_cantidad_manual = 0
@@ -111,14 +108,21 @@ def ingreso_qr(request, pk):
     # obteniendo_record = TipoProducto.objects.get(tipo=mk[0])
     # obteniendo_id = obteniendo_record.id
     current_user = request.user if request.user.is_authenticated else None
-    print(current_user)
     form = ProductoForm(initial={'usuario': current_user, 'IdReferencia': pk, 'IdEstado_producto': 4, 'IdBodega': 1})
     if request.method == 'POST':
-        form = ProductoForm(request.POST)
+        la_cantidad_manual = int(request.POST.get('cantidad_manual', ''))
+        new_request = request.POST.copy()
+        new_request.pop('cantidad_manual')
+        form = ProductoForm(new_request)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            for i in range(la_cantidad_manual):
+                instance.id = None
+                instance.save()
             return redirect('/ingreso_productos/'+str(mk[0])+'_/')
-    context = {'form': form}
+    else:
+        la_cantidad_manual = 0
+    context = {'form': form, 'cantidad_ingresos': la_cantidad_manual}
     return render(request, 'base/ingreso_productos/ingreso_qr.html', context)
 
 def ingreso_referencias(request):
@@ -137,7 +141,18 @@ def ingreso_referencias(request):
 
 
 def transferencias_stock(request):
-    return render(request, 'base/DeEjemplo/transferencias_stock.html')
+    current_user = request.user if request.user.is_authenticated else None
+    # la_bodega = Bodega.objects.all().filter(nombre='Bogotá')
+    print(current_user)
+    la_bodega = "Otra bodega"
+    if str(current_user) == "Javier":
+        la_bodega = "Bogotá"
+    los_productos = Producto.objects.all().filter(IdBodega=1)
+    # Hay que buscar la ID de bogotá
+    print(los_productos[0])
+    print(los_productos[0].IdBodega)
+    context = {'la_bodega': la_bodega, 'los_productos': los_productos}
+    return render(request, 'base/transferencias_stock.html', context)
 
 def ajuste_de_inventario(request):
     return render(request, 'base/DeEjemplo/ajuste_de_inventario.html')
