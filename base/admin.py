@@ -5,8 +5,8 @@ from django.contrib import admin
 from .models import Bodega, Proveedor, EstadoProducto, TipoProducto, Referencia, Producto, Transacciones
 
 class ProductoFilter(admin.ModelAdmin):
-    list_display = ["usuario", "IdEstado_producto", "IdBodega", "codigoQR", "lote", "fecha_vencimiento", "creado", "actualizado"]
-    list_filter = ["usuario", "IdEstado_producto", "IdBodega", "codigoQR", "lote", "fecha_vencimiento", "creado", "actualizado"]
+    list_display = ["usuario", "IdReferencia", "IdEstado_producto", "IdBodega", "codigoQR", "lote", "fecha_vencimiento", "creado", "actualizado"]
+    list_filter = ["usuario", "IdReferencia", "IdEstado_producto", "IdBodega", "codigoQR", "lote", "fecha_vencimiento", "creado", "actualizado"]
 
 admin.site.register(Bodega)
 admin.site.register(Proveedor)

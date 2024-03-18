@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Bodega, Proveedor, Referencia, Producto
-from .forms import ReferenciaForm, ProductoForm
+from .forms import ReferenciaForm, ProductoForm, ProductoForm2, ProductoForm2_disabled
 from django.core.cache import cache
 
 items_p = [
@@ -19,15 +19,41 @@ products = [
     {'id': 4, 'type': 'Cinta', 'SKU': 'SKU4', 'lote': 'LOTE4'}
 ]
 
-# los_proveedores = [
-#     {'id': 1, 'nombre': 'Europa'},
-#     {'id': 2, 'nombre': 'USA'}
-# ]
 def home(request):
     return render(request, 'base/login.html')
 
 def dashboard(request):
-    context = {'products': products}
+    current_user = request.user if request.user.is_authenticated else None
+    # la_bodega = Bodega.objects.all().filter(nombre='Bogotá')
+    print(current_user)
+    los_productos = Producto.objects.all()
+    conteo_prod = {}
+    # conteo_prod[""][""] = 0
+    for prod in los_productos:
+        str_bodega = str(prod.IdBodega)
+        str_referencia = str(prod.IdReferencia)
+        if str_bodega in conteo_prod.keys():
+            if str_referencia in conteo_prod[str_bodega].keys():
+                conteo_prod[str_bodega][str_referencia] += 1
+            else:
+                conteo_prod[str_bodega][str_referencia] = 1
+        else:
+            conteo_prod[str_bodega] = {}
+            conteo_prod[str_bodega][str_referencia] = 1
+        print(conteo_prod)
+        print(conteo_prod[str_bodega][str_referencia])
+        print(str_bodega)
+        print(prod.IdBodega_id)
+
+    prod_id = str(los_productos[1])
+    print(prod_id)
+
+    producto_get = Producto.objects.get(id=prod_id)
+    print(producto_get)
+    producto_form = ProductoForm2(instance=producto_get)
+    
+    conteo_zipped = zip(conteo_prod.keys(), conteo_prod.values())
+    context = {'los_productos': los_productos, 'conteo_zipped': conteo_zipped, 'form': producto_form}
     return render(request, 'base/dashboard.html', context)
 
 def items_pk(request, pk):
@@ -142,16 +168,24 @@ def ingreso_referencias(request):
 
 def transferencias_stock(request):
     current_user = request.user if request.user.is_authenticated else None
-    # la_bodega = Bodega.objects.all().filter(nombre='Bogotá')
-    print(current_user)
-    la_bodega = "Otra bodega"
-    if str(current_user) == "Javier":
-        la_bodega = "Bogotá"
-    los_productos = Producto.objects.all().filter(IdBodega=1)
-    # Hay que buscar la ID de bogotá
-    print(los_productos[0])
-    print(los_productos[0].IdBodega)
-    context = {'la_bodega': la_bodega, 'los_productos': los_productos}
+    
+    if request.method == 'POST':
+        los_productos = {}
+        los_productos['IdReferencia'] = request.POST.get('IdReferencia')
+        los_productos['IdEstado_producto'] = request.POST.get('IdEstado_producto')
+        los_productos['IdBodega'] = request.POST.get('IdBodega')
+        los_productos['qr'] = request.POST.get('codigoQR')
+        print(los_productos)
+
+        consulta = Producto.objects.all().filter(IdReferencia=request.POST.get('IdReferencia'), IdEstado_producto=request.POST.get('IdEstado_producto'), IdBodega=request.POST.get('IdBodega'), codigoQR=request.POST.get('codigoQR'))
+        print(list(consulta))
+        print(consulta[0])
+        print(consulta[1])
+        print(len(consulta))
+        # los_productos_form = ProductoForm(initial={'usuario': current_user}, instance=los_productos)
+        form = ProductoForm2(request.POST)
+        form_disabled = ProductoForm2_disabled(request.POST)
+    context = {'form': form, 'form_disabled': form_disabled, 'cantidad_de_queries': len(consulta), 'ids_queryset': list(consulta)}
     return render(request, 'base/transferencias_stock.html', context)
 
 def ajuste_de_inventario(request):

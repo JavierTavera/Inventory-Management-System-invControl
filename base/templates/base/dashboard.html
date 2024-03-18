@@ -5,13 +5,25 @@
 <div>
 
     <div>
-        <h3>Total Inventario: n</h3>
-        {% for product in products %}
-            <div>
-                <h5>{{product.id}} - {{product.type}}</h5>
-            </div>
-
-        {% endfor %}
+        <h3>Inventario por bodega:</h3>
+        <div>{% for k, v in conteo_zipped %}
+                <div>Productos en {{k}}: {{v}}</div>
+                    <div>{% for k2, v2 in v.items %}
+                        <div># Productos {{k2}}: {{v2}}</div>
+                        {% endfor %}
+                    </div>
+            {% endfor %}
+        </div>
     </div>
+</div>
+<div>
+    <br>
+    <form method="POST" action="/transferencias_stock/">
+        {% csrf_token %}
+        <div>
+        {{form}}
+        <br>
+        <input type="submit" value="Ingresar" class="btn btn-primary">
+    </form>
 </div>
 {% endblock content %}
