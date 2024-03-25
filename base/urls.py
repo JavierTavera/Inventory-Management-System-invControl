@@ -15,6 +15,7 @@ urlpatterns = [
     path('ingreso_referencias/', views.ingreso_referencias, name="ingreso_referencias"),
 
     path('transferencias_stock/', views.transferencias_stock),
+    path('transferencias_stock_cambio/', views.transferencias_stock_cambio),
     path('ajuste_de_inventario/', views.ajuste_de_inventario),
     path('ordenes_de_ventas/', views.ordenes_de_ventas),
 ]

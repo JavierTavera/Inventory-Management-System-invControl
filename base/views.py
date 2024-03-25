@@ -177,16 +177,49 @@ def transferencias_stock(request):
         los_productos['qr'] = request.POST.get('codigoQR')
         print(los_productos)
 
-        consulta = Producto.objects.all().filter(IdReferencia=request.POST.get('IdReferencia'), IdEstado_producto=request.POST.get('IdEstado_producto'), IdBodega=request.POST.get('IdBodega'), codigoQR=request.POST.get('codigoQR'))
+        consulta = Producto.objects.all().filter(IdReferencia=request.POST.get('IdReferencia'), IdEstado_producto=request.POST.get('IdEstado_producto'), IdBodega=request.POST.get('IdBodega'), 
+                                                 codigoQR=request.POST.get('codigoQR'), lote=request.POST.get('lote'))
         print(list(consulta))
-        print(consulta[0])
-        print(consulta[1])
         print(len(consulta))
         # los_productos_form = ProductoForm(initial={'usuario': current_user}, instance=los_productos)
         form = ProductoForm2(request.POST)
         form_disabled = ProductoForm2_disabled(request.POST)
     context = {'form': form, 'form_disabled': form_disabled, 'cantidad_de_queries': len(consulta), 'ids_queryset': list(consulta)}
-    return render(request, 'base/transferencias_stock.html', context)
+    return render(request, 'base/transferencias/transferencias_stock.html', context)
+
+def transferencias_stock_cambio(request):
+    current_user = request.user if request.user.is_authenticated else None
+    
+    if request.method == 'POST':
+        los_productos = {}
+        los_productos['IdReferencia'] = request.POST.get('IdReferencia')
+        los_productos['IdEstado_producto'] = request.POST.get('IdEstado_producto')
+        los_productos['IdBodega'] = request.POST.get('IdBodega')
+        los_productos['qr'] = request.POST.get('codigoQR')
+        los_productos['ids_queryset'] = request.POST.get('ids_queryset')
+        los_productos['cantidad_manual'] = int(request.POST.get('cantidad_manual'))
+        ids_queryset_str = los_productos['ids_queryset']
+        ids_queryset_str = ids_queryset_str[1:len(ids_queryset_str)-2]
+        ids_queryset_str = ids_queryset_str.replace('<Producto: ', '')
+        list_str = ids_queryset_str.split('>, ')
+        print(los_productos)
+        # print(list_str[1])
+        print(ids_queryset_str)
+
+        new_request = request.POST.copy()
+        new_request.pop('cantidad_manual')
+        new_request.pop('ids_queryset')
+
+        for i in range(los_productos['cantidad_manual']):
+            cambio_producto = Producto.objects.get(id=list_str[i])
+            form = ProductoForm(instance=cambio_producto)
+            form = ProductoForm(new_request, instance=cambio_producto)
+            if form.is_valid():
+                form.save()
+
+
+        context = {'qr': los_productos['qr'], 'ids_queryset': los_productos['ids_queryset']}
+        return render(request, 'base/transferencias/transferencias_stock_cambio.html', context)
 
 def ajuste_de_inventario(request):
     return render(request, 'base/DeEjemplo/ajuste_de_inventario.html')
