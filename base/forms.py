@@ -95,7 +95,7 @@ class ProductoForm2(ModelForm):
         model = Producto
         fields = '__all__'
         labels = {
-            'IdReferencia': 'Producto/Referencia',
+            'IdReferencia': 'Referencia',
             'IdEstado_producto': 'Estado producto',
             'IdBodega': 'Bodega',
             'codigoQR': 'codigo QR (Opcional)',

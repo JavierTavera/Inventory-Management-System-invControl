@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Bodega, Proveedor, Referencia, Producto
+from .models import Bodega, Proveedor, Referencia, Producto, TipoProducto
 from .forms import ReferenciaForm, ProductoForm, ProductoForm2, ProductoForm2_disabled
 from django.core.cache import cache
 
@@ -55,6 +55,54 @@ def dashboard(request):
     conteo_zipped = zip(conteo_prod.keys(), conteo_prod.values())
     context = {'los_productos': los_productos, 'conteo_zipped': conteo_zipped, 'form': producto_form}
     return render(request, 'base/dashboard.html', context)
+
+def dashboards(request, pk):
+    current_user = request.user if request.user.is_authenticated else None
+    
+    ref_bool = False
+    if int(pk)<=5 and int(pk)>=1:
+        ref_bool = True
+        tipo_prod = TipoProducto.objects.all().filter(id=pk)
+        las_referencias = Referencia.objects.all()
+        # print(las_referencias[0].nombre)
+        # for refe in las_referencias:
+        #     print(refe)
+        #     print(refe.nombre)
+        #     print(refe.tipo)
+        # Así se busca la referencia de un modelo dentro de otro
+        los_productos = Producto.objects.all().filter(IdReferencia__tipo=pk)
+        if not los_productos:
+            # No hay productos
+            return render(request, 'base/productos.html')
+
+        conteo_prod = {}
+        str_referencia=""
+        for prod in los_productos:
+            str_bodega = str(prod.IdBodega)
+            for refe in las_referencias:
+                if refe == prod.IdReferencia and str_referencia == "":
+                    str_referencia = str(refe.nombre)
+                    # str_referencia = str(prod.IdReferencia)
+            
+            if str_bodega in conteo_prod.keys():
+                if str_referencia in conteo_prod[str_bodega].keys():
+                    conteo_prod[str_bodega][str_referencia] += 1
+                else:
+                    conteo_prod[str_bodega][str_referencia] = 1
+            else:
+                conteo_prod[str_bodega] = {}
+                conteo_prod[str_bodega][str_referencia] = 1
+
+        prod_id = str(los_productos[0])
+
+        producto_get = Producto.objects.get(id=prod_id)
+        producto_form = ProductoForm2(instance=producto_get)
+        
+        conteo_zipped = zip(conteo_prod.keys(), conteo_prod.values())
+        context = {'los_productos': los_productos, 'conteo_zipped': conteo_zipped, 'form': producto_form, 'el_tipo_producto': tipo_prod[0]}
+        return render(request, 'base/dashboards.html', context)
+    else:
+        return render(request, 'base/productos.html')
 
 def items_pk(request, pk):
     it_bool = False

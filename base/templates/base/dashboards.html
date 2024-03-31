@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<div>
+
+    <div>
+        <h3>Inventario por bodega para {{el_tipo_producto}}:</h3>
+        <div class="row">{% for k, v in conteo_zipped %}
+                <div class="col-sm"><strong><u>Productos en {{k}}:</u></strong>  <! -- Productos en {{k}}: {{v}} -->
+                    <div>{% for k2, v2 in v.items %}
+                        <div>{{k2}}: {{v2}}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div>
+    <br>
+    <strong>Consultar por detalle de {{el_tipo_producto}}:</strong>
+    <br>
+    <form method="POST" action="/transferencias_stock/">
+        {% csrf_token %}
+        <div>
+        {{form}}
+        <br>
+        <input type="submit" value="Consulta" class="btn btn-primary">
+    </form>
+</div>
+{% endblock content %}
