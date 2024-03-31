@@ -64,13 +64,9 @@ def dashboards(request, pk):
         ref_bool = True
         tipo_prod = TipoProducto.objects.all().filter(id=pk)
         las_referencias = Referencia.objects.all()
-        # print(las_referencias[0].nombre)
-        # for refe in las_referencias:
-        #     print(refe)
-        #     print(refe.nombre)
-        #     print(refe.tipo)
         # Así se busca la referencia de un modelo dentro de otro
         los_productos = Producto.objects.all().filter(IdReferencia__tipo=pk)
+        print(los_productos)
         if not los_productos:
             # No hay productos
             return render(request, 'base/productos.html')
@@ -78,10 +74,14 @@ def dashboards(request, pk):
         conteo_prod = {}
         str_referencia=""
         for prod in los_productos:
+            # print(prod)
+            # print(prod.IdBodega)
+            # print(prod.IdReferencia)
             str_bodega = str(prod.IdBodega)
             for refe in las_referencias:
-                if refe == prod.IdReferencia and str_referencia == "":
-                    str_referencia = str(refe.nombre)
+                if refe == prod.IdReferencia:
+                    str_referencia = str(refe.id)
+                    print(str_referencia)
                     # str_referencia = str(prod.IdReferencia)
             
             if str_bodega in conteo_prod.keys():
@@ -225,8 +225,12 @@ def transferencias_stock(request):
         los_productos['qr'] = request.POST.get('codigoQR')
         print(los_productos)
 
-        consulta = Producto.objects.all().filter(IdReferencia=request.POST.get('IdReferencia'), IdEstado_producto=request.POST.get('IdEstado_producto'), IdBodega=request.POST.get('IdBodega'), 
+        if request.POST.get('codigoQR') != '':
+            consulta = Producto.objects.all().filter(IdReferencia=request.POST.get('IdReferencia'), IdEstado_producto=request.POST.get('IdEstado_producto'), IdBodega=request.POST.get('IdBodega'), 
                                                  codigoQR=request.POST.get('codigoQR'), lote=request.POST.get('lote'))
+        else:
+            consulta = Producto.objects.all().filter(IdReferencia=request.POST.get('IdReferencia'), IdEstado_producto=request.POST.get('IdEstado_producto'), IdBodega=request.POST.get('IdBodega'), 
+                                                 lote=request.POST.get('lote'))
         print(list(consulta))
         print(len(consulta))
         # los_productos_form = ProductoForm(initial={'usuario': current_user}, instance=los_productos)

@@ -34,6 +34,7 @@ class TipoProducto(models.Model):
         return self.tipo
 
 class Referencia(models.Model):
+    id = models.CharField(primary_key=True, max_length=50)
     IdReferencia = models.CharField(max_length=50)
     IdProveedor = models.ForeignKey(Proveedor, on_delete=models.SET_NULL, null=True)
     tipo = models.ForeignKey(TipoProducto, on_delete=models.SET_NULL, null=True)
@@ -44,7 +45,7 @@ class Referencia(models.Model):
     actualizado = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.IdReferencia
+        return self.id
 
 class Producto(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

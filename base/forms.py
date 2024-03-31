@@ -7,6 +7,7 @@ class ReferenciaForm(ModelForm):
         model = Referencia
         fields = '__all__'
         labels = {
+            'id': 'ID',
             'usuario': '',
             'IdReferencia': 'Código Referencia',
             'tipo': 'Tipo de Producto',
@@ -15,6 +16,11 @@ class ReferenciaForm(ModelForm):
             'IdProveedor': 'Proveedor'
         }
         widgets = {
+            'id': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Código de referencia'
+            }),
             'IdReferencia': TextInput(attrs={
                 'class': "form-control",
                 'style': 'max-width: 300px;',
