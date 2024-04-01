@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, Select
-from .models import Referencia, Producto
+from .models import Referencia, Producto, Bodega
 
 class ReferenciaForm(ModelForm):
 
@@ -106,7 +106,7 @@ class ProductoForm2(ModelForm):
             'IdBodega': 'Bodega',
             'codigoQR': 'codigo QR (Opcional)',
             'lote': 'Lote',
-            'fecha_vencimiento': 'Fecha vencimiento (DD-MM-AAAA) (Opcional)',
+            'fecha_vencimiento': '',
             'usuario': ''
         }
         widgets = {
@@ -135,7 +135,8 @@ class ProductoForm2(ModelForm):
             'fecha_vencimiento': TextInput(attrs={
                 'class': "form-control",
                 'style': 'max-width: 300px;',
-                'placeholder': 'Ej: 20-12-2026'
+                'placeholder': 'Ej: 20-12-2026',
+                'hidden': ''
             }),
             'usuario': Select(attrs={
                 'hidden': ''
@@ -154,7 +155,7 @@ class ProductoForm2_disabled(ModelForm):
             'IdBodega': 'Bodega',
             'codigoQR': 'codigo QR (Opcional)',
             'lote': 'Lote',
-            'fecha_vencimiento': 'Fecha vencimiento (DD-MM-AAAA) (Opcional)',
+            'fecha_vencimiento': '',
             'usuario': ''
         }
         widgets = {
@@ -189,9 +190,26 @@ class ProductoForm2_disabled(ModelForm):
                 'class': "form-control",
                 'style': 'max-width: 300px;',
                 'placeholder': 'Ej: 20-12-2026',
-                'disabled': 'True'
+                'disabled': 'True',
+                'hidden': ''
             }),
             'usuario': Select(attrs={
                 'hidden': ''
+            })
+        }
+    
+
+class BodegaForm(ModelForm):
+
+    class Meta:
+        model = Bodega
+        fields = ['nombre']
+        labels = {
+            'nombre': 'Bodega'
+        }
+        widgets = {
+            'nombre': Select(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;'
             })
         }

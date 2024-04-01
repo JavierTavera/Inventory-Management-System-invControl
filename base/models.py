@@ -35,7 +35,6 @@ class TipoProducto(models.Model):
 
 class Referencia(models.Model):
     id = models.CharField(primary_key=True, max_length=50)
-    IdReferencia = models.CharField(max_length=50)
     IdProveedor = models.ForeignKey(Proveedor, on_delete=models.SET_NULL, null=True)
     tipo = models.ForeignKey(TipoProducto, on_delete=models.SET_NULL, null=True)
     nombre = models.CharField(max_length=80, null=True, blank=True)

@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Estás en bodega {{bodega}}</h1>
+<br>
+<h3>Productos en tránsito hacia {{bodega}}:</h3>
+{% for k, v in en_transito_zipped %}
+    {{k}}: {{v}}
+{% endfor %}
+<br><br>
+<div>
+    <form method="GET" action="">
+        {% csrf_token %}
+        <label for="nombre_bodega">Cambiar de bodega:</label>
+        <select id="nom_bodega" name="nom_bodega" class="form-control" style="max-width: 300px;">
+            {% for k, v in bodegas_zipped %}
+            <option value="{{k}}">{{v}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Ir a bodega" class="btn btn-primary">
+    </form>
+</div>
+{% endblock content %}

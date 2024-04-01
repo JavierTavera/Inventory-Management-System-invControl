@@ -17,6 +17,7 @@ urlpatterns = [
 
     path('transferencias_stock/', views.transferencias_stock),
     path('transferencias_stock_cambio/', views.transferencias_stock_cambio),
+    path('recepcion_stock/', views.transferencias_stock, name="transferencias_stock"),
     path('ajuste_de_inventario/', views.ajuste_de_inventario),
     path('ordenes_de_ventas/', views.ordenes_de_ventas),
 ]

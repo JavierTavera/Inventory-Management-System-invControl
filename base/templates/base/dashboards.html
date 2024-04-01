@@ -17,6 +17,23 @@
         </div>
     </div>
 </div>
+
+<div>
+
+    <div>
+        <h3>Inventario en tránsito:</h3>
+        <div class="row">{% for k, v in conteo__enTransito_zipped %}
+                <div class="col-sm"><strong><u>Productos en tránsito hacia {{k}}:</u></strong>  <! -- Productos en {{k}}: {{v}} -->
+                    <div>{% for k2, v2 in v.items %}
+                        <div>{{k2}}: {{v2}}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 <div>
     <br>
     <strong>Consultar por detalle de {{el_tipo_producto}}:</strong>
