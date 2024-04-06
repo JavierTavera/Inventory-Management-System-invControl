@@ -3,11 +3,7 @@
 {% block content %}
 <h1>Estás en bodega {{bodega}}</h1>
 <br>
-<h3>Productos en tránsito hacia {{bodega}}:</h3>
-{% for k, v in en_transito_zipped %}
-    {{k}}: {{v}}
-{% endfor %}
-<br><br>
+
 <div>
     <form method="GET" action="">
         {% csrf_token %}
@@ -17,8 +13,16 @@
             <option value="{{k}}">{{v}}</option>
             {% endfor %}
         </select>
-        <br>
         <input type="submit" value="Ir a bodega" class="btn btn-primary">
     </form>
 </div>
+<br><br>
+
+Recepcionar producto con QR (pendiente)
+
+<br><br>
+<h3>Productos en tránsito hacia {{bodega}}:</h3>
+{% for k, v in en_transito_zipped %}
+    <div>{{k}}: {{v}}</div>
+{% endfor %}
 {% endblock content %}

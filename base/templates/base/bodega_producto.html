@@ -1,0 +1,42 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Inventario de {{bodega}} para {{el_tipo_producto}}:</h1>
+
+<div>
+    <form method="GET" action="/bodega_producto/">
+        {% csrf_token %}
+        <label for="nombre_bodega"><strong>Ir a bodega:</strong></label>
+        <select id="nom_bodega" name="nom_bodega" class="form-control" style="max-width: 300px;">
+            {% for k, v in listado_bodegas.items %}
+            <option value="{{k}}">{{v}}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" id="tipoProducto" name="tipoProducto" value="{{el_pk}}">
+        <input type="submit" value="Ir a bodega" class="btn btn-primary">
+    </form>
+    <br>
+</div>
+
+<div>
+    <div>
+        <div class="row">
+                <div class="col-sm">
+                    <h3>Productos en {{bodega}}</h3>
+                    {% for k, v in conteo_prod.items %}
+                    <strong><u>{{k}}:</u></strong> {{v}} <br><! -- Productos en {{k}}: {{v}} -->
+                    {% endfor %}
+                    <br>
+                </div>
+                <div class="col-sm">
+                    <h3>Productos en tránsito</h3>
+                    {% for k, v in conteo_prod_enTransito.items %}
+                    <strong><u>{{k}}:</u></strong> {{v}} <br><! -- Productos en {{k}}: {{v}} -->
+                    {% endfor %}
+                </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

@@ -57,9 +57,7 @@ def dashboard(request):
     return render(request, 'base/dashboard.html', context)
 
 def dashboards(request, pk):
-    current_user = request.user if request.user.is_authenticated else None
     
-    ref_bool = False
     if int(pk)<=5 and int(pk)>=1:
         ref_bool = True
         tipo_prod = TipoProducto.objects.all().filter(id=pk)
@@ -113,6 +111,105 @@ def dashboards(request, pk):
         return render(request, 'base/dashboards.html', context)
     else:
         return render(request, 'base/productos.html')
+
+
+
+def dashboard_producto(request, pk):
+    
+    if int(pk)<=5 and int(pk)>=1:
+        ref_bool = True
+        tipo_prod = TipoProducto.objects.all().filter(id=pk)
+        las_referencias = Referencia.objects.all()
+        # Así se busca la referencia de un modelo dentro de otro
+        los_productos = Producto.objects.all().filter(IdReferencia__tipo=pk)
+        print(los_productos)
+        if not los_productos:
+            # No hay productos
+            return render(request, 'base/productos.html')
+
+        conteo_prod = {}
+        conteo_prod_enTransito = {}
+        str_referencia=""
+        for prod in los_productos:
+            str_bodega = str(prod.IdBodega)
+            str_estado = str(prod.IdEstado_producto)
+            print(prod.IdEstado_producto)
+            for refe in las_referencias:
+                if refe == prod.IdReferencia:
+                    str_referencia = str(refe.id)
+            
+            if str_estado == 'En bodega':
+                if str_referencia in conteo_prod.keys():
+                    conteo_prod[str_referencia] += 1
+                else:
+                    conteo_prod[str_referencia] = 1
+
+
+            elif str_estado == 'En tránsito':
+                if str_referencia in conteo_prod_enTransito.keys():
+                    conteo_prod_enTransito[str_referencia] += 1
+                else:
+                    conteo_prod_enTransito[str_referencia] = 1
+
+        # Formulario bodegas:
+        todas_bodegas = Bodega.objects.all()
+        listado_bodegas = {}
+        for bode in todas_bodegas:
+            listado_bodegas[bode.id] = bode.nombre
+
+        context = {'los_productos': los_productos, 'conteo_prod': conteo_prod, 'conteo_prod_enTransito': conteo_prod_enTransito,
+                   'el_tipo_producto': tipo_prod[0], 'listado_bodegas': listado_bodegas, 'el_pk': pk}
+        return render(request, 'base/dashboard_producto.html', context)
+    else:
+        return render(request, 'base/productos.html')
+
+
+
+def bodega_producto(request):
+
+    pk = int(request.GET.get('tipoProducto'))
+    nom_bodega = request.GET.get('nom_bodega')
+
+    bodega = Bodega.objects.all().filter(id=nom_bodega) #La bodega sería bodega[0]
+    
+    if int(pk)<=5 and int(pk)>=1:
+        ref_bool = True
+        tipo_prod = TipoProducto.objects.all().filter(id=pk)
+        las_referencias = Referencia.objects.all()
+        # Así se busca la referencia de un modelo dentro de otro
+        los_productos = Producto.objects.all().filter(IdReferencia__tipo=pk, IdBodega__id=nom_bodega)
+        print(los_productos)
+        if not los_productos:
+            # No hay productos
+            return render(request, 'base/productos.html')
+
+        conteo_prod = {}
+        conteo_prod_enTransito = {}
+        str_referencia=""
+        for prod in los_productos:
+            str_bodega = str(prod.IdBodega)
+            str_estado = str(prod.IdEstado_producto)
+            for refe in las_referencias:
+                if refe == prod.IdReferencia:
+                    str_referencia = str(refe.id)
+            
+            if str_estado == 'En bodega':
+                if str_referencia in conteo_prod.keys():
+                    conteo_prod[str_referencia] += 1
+                else:
+                    conteo_prod[str_referencia] = 1
+            elif str_estado == 'En tránsito':
+                if str_referencia in conteo_prod_enTransito.keys():
+                    conteo_prod_enTransito[str_referencia] += 1
+                else:
+                    conteo_prod_enTransito[str_referencia] = 1
+        
+        context = {'los_productos': los_productos, 'conteo_prod': conteo_prod, 'conteo_prod_enTransito': conteo_prod_enTransito,
+                   'el_tipo_producto': tipo_prod[0], 'bodega': bodega[0]}
+        return render(request, 'base/bodega_producto.html', context)
+    else:
+        return render(request, 'base/productos.html')
+
 
 def items_pk(request, pk):
     it_bool = False
@@ -272,38 +369,6 @@ def transferencias_stock(request):
         context = {'form': form, 'bodega': bodega[0], 'bodegas_zipped': bodegas_zipped, 'en_transito_zipped': en_transito_zipped}
         return render(request, 'base/transferencias/recepcion_stock.html', context)
 
-def transferencias_stock_cambio(request):
-    current_user = request.user if request.user.is_authenticated else None
-    
-    if request.method == 'POST':
-        los_productos = {}
-        los_productos['IdReferencia'] = request.POST.get('IdReferencia')
-        los_productos['IdEstado_producto'] = request.POST.get('IdEstado_producto')
-        los_productos['IdBodega'] = request.POST.get('IdBodega')
-        los_productos['qr'] = request.POST.get('codigoQR')
-        los_productos['ids_queryset'] = request.POST.get('ids_queryset')
-        los_productos['cantidad_manual'] = int(request.POST.get('cantidad_manual'))
-        ids_queryset_str = los_productos['ids_queryset']
-        ids_queryset_str = ids_queryset_str[1:len(ids_queryset_str)-2]
-        ids_queryset_str = ids_queryset_str.replace('<Producto: ', '')
-        list_str = ids_queryset_str.split('>, ')
-        print(los_productos)
-        # print(list_str[1])
-        print(ids_queryset_str)
-
-        new_request = request.POST.copy()
-        new_request.pop('cantidad_manual')
-        new_request.pop('ids_queryset')
-
-        for i in range(los_productos['cantidad_manual']):
-            cambio_producto = Producto.objects.get(id=list_str[i])
-            form = ProductoForm(instance=cambio_producto)
-            form = ProductoForm(new_request, instance=cambio_producto)
-            if form.is_valid():
-                form.save()
-
-        context = {'qr': los_productos['qr'], 'ids_queryset': los_productos['ids_queryset']}
-        return render(request, 'base/transferencias/transferencias_stock_cambio.html', context)
 
 def ajuste_de_inventario(request):
     return render(request, 'base/DeEjemplo/ajuste_de_inventario.html')
