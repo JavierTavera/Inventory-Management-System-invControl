@@ -1,0 +1,179 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Inventario de {{refNombre}} en {{bodega}} ({{estado}}):</h1>
+<br>
+
+
+<div class="row gy-5 g-xl-10">
+    <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-header bg-white"><h3 class="card-title align-items-start flex-column">Datos de referencia</h3></div>
+                    <div class="card-body pt-4">
+
+            <!--begin::Item-->
+            <div class="d-flex flex-stack">
+                <div class="d-flex align-items-center me-5">
+                    <div class="me-5">
+                        <span class="text-gray-800 fw-bold text-hover-primary fs-6">ID</span>
+                    </div>            
+                </div>
+                <div class="text-gray-500 fw-bold fs-7 text-end">{{refID}}</div>
+            </div>
+            <!--end::Item-->
+            <!--begin::Separator-->
+            <div class="separator separator-dashed my-5"></div>
+            <!--end::Separator-->
+
+            <!--begin::Item-->
+            <div class="d-flex flex-stack">
+                <div class="d-flex align-items-center me-5">
+                    <div class="me-5">
+                        <span class="text-gray-800 fw-bold text-hover-primary fs-6">Nombre</span>
+                    </div>            
+                </div>
+                <div class="text-gray-500 fw-bold fs-7 text-end">{{refNombre}}</div>
+            </div>
+            <!--end::Item-->
+            <!--begin::Separator-->
+            <div class="separator separator-dashed my-5"></div>
+            <!--end::Separator-->
+
+            <!--begin::Item-->
+             <div class="d-flex flex-stack">
+                <div class="d-flex align-items-center me-5">
+                    <div class="me-5">
+                        <span class="text-gray-800 fw-bold text-hover-primary fs-6">Proveedor</span>
+                    </div>            
+                </div>
+                <div class="text-gray-500 fw-bold fs-7 text-end">{{refProveedor}}</div>
+            </div>
+            <!--end::Item-->
+            <!--begin::Separator-->
+            <div class="separator separator-dashed my-5"></div>
+            <!--end::Separator-->
+
+            <!--begin::Item-->
+            <div class="d-flex flex-stack">
+                <div class="d-flex align-items-center me-5">
+                    <div class="me-5">
+                        <span class="text-gray-800 fw-bold text-hover-primary fs-6">Tipo de producto</span>
+                    </div>            
+                </div>
+                <div class="text-gray-500 fw-bold fs-7 text-end">{{refTipo}}</div>
+            </div>
+            <!--end::Item-->
+            <!--begin::Separator-->
+            <div class="separator separator-dashed my-5"></div>
+            <!--end::Separator-->
+
+            <!--begin::Item-->
+            <div class="d-flex flex-stack">
+                <div class="d-flex align-items-center me-5">
+                    <div class="me-5">
+                        <span class="text-gray-800 fw-bold text-hover-primary fs-6">Cantidad total en {{bodega}}</span>
+                    </div>            
+                </div>
+                <div class="text-gray-500 fw-bold fs-7 text-end">{{cantidad_total}}</div>
+            </div>
+            <!--end::Item-->
+
+
+                    </div>
+                </div>
+                
+    </div>
+
+
+    <div class="col-xl-4">
+        
+        {% for k, v in conteo_prod.items %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title align-items-start flex-column">Lotes de {{refNombre}} en {{bodega}} ({{estado}})</h3>
+            </div>
+            <div class="card-body pt-4">
+
+
+
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">Lote</span>
+            </div>            
+        </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{k}}</div>
+    </div>
+    <!--end::Item-->
+    <!--begin::Separator-->
+    <div class="separator separator-dashed my-5"></div>
+    <!--end::Separator-->
+
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">Fecha de vencimiento</span>
+            </div>            
+        </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{v.0}}</div>
+    </div>
+    <!--end::Item-->
+    <!--begin::Separator-->
+    <div class="separator separator-dashed my-5"></div>
+    <!--end::Separator-->
+
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">Cantidad</span>
+            </div>            
+        </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{v.1}}</div>
+    </div>
+    <!--end::Item-->
+                
+            </div>
+        </div><br>
+        {% endfor %}
+
+    </div>
+
+
+    <div class="col-xl-4">
+        <div class="card bg-white" style="max-width: 30rem;">
+    
+            <div class="card-body pt-4">
+                <h1>Transferencia:</h1>
+                <br>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div>
+                {{form}}
+                <label for="id_bodega">Cambiar a bodega:</label>
+                <select id="id_bodega" name="id_bodega" class="form-control" style="max-width: 300px;">
+                    {% for k, v in listado_bodegas.items %}
+                    <option value="{{k}}">{{v}}</option>
+                    {% endfor %}
+                </select>
+                <label for="cantidad_manual">Cantidad de productos a transferir:</label>
+                    <input type="number" id="cantidad_manual" name="cantidad_manual" class="form-control" style="max-width: 300px;" placeholder="Ej: 3" min="0" max="{{cantidad_total}}">
+                <br>
+                <input type="submit" value="Consulta" class="btn btn-primary">
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock content %}

@@ -213,3 +213,56 @@ class BodegaForm(ModelForm):
                 'style': 'max-width: 300px;'
             })
         }
+
+
+
+class TransferenciaForm(ModelForm):
+
+    class Meta:
+        model = Producto
+        fields = '__all__'
+        labels = {
+            'IdReferencia': 'Referencia',
+            'IdEstado_producto': 'Estado producto',
+            'IdBodega': 'Bodega actual',
+            'codigoQR': 'codigo QR (Opcional)',
+            'lote': 'Lote',
+            'fecha_vencimiento': '',
+            'usuario': ''
+        }
+        widgets = {
+            'IdReferencia': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'disabled': 'True'
+            }),
+            'IdEstado_producto': Select(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'disabled': 'True'
+            }),
+            'IdBodega': Select(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'disabled': 'True'
+            }),
+            'codigoQR': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'codigo QR'
+            }),
+            'lote': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Lote'
+            }),
+            'fecha_vencimiento': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Ej: 20-12-2026',
+                'hidden': ''
+            }),
+            'usuario': Select(attrs={
+                'hidden': ''
+            })
+        }
