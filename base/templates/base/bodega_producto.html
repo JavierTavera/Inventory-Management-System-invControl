@@ -3,24 +3,68 @@
 {% block content %}
 <h1>Inventario de {{bodega}} para {{el_tipo_producto}}:</h1>
 
+<div class="row gy-5 g-xl-10">
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title align-items-start flex-column">Productos en {{bodega}}</h3>
+            </div>
+            <div class="card-body pt-4">
 
-<div>
-    <div>
-        <div class="row">
-                <div class="col-sm">
-                    <h3>Productos en {{bodega}}</h3>
-                    {% for k, v in conteo_prod.items %}
-                    <strong><a href="{% url 'la_referencia' %}?idBodega={{id_bodega}}&refer={{k}}&elEstado=4">{{k}}</a>:</strong> {{v}} <br><! -- Productos en {{k}}: {{v}} -->
-                    {% endfor %}
-                    <br>
-                </div>
-                <div class="col-sm">
-                    <h3>Productos en tránsito hacia {{bodega}}</h3>
-                    {% for k, v in conteo_prod_enTransito.items %}
-                    <strong><a href="{% url 'la_referencia' %}?idBodega={{id_bodega}}&refer={{k}}&elEstado=2">{{k}}</a>:</strong> {{v}} <br><! -- Productos en {{k}}: {{v}} -->
-                    {% endfor %}
-                </div>
+    {% for k, v in conteo_prod.items %}
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">
+                    <a href="{% url 'la_referencia' %}?idBodega={{id_bodega}}&refer={{k}}&elEstado=4">{{k}}</a>
+                </span>
+            </div>            
         </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{v}}</div>
+    </div>
+    <!--end::Item-->
+    {% if not forloop.last %}
+    <!--begin::Separator-->
+    <div class="separator separator-dashed my-5"></div>
+    <!--end::Separator-->
+    {% endif %}
+    {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title align-items-start flex-column">Productos en tránsito hacia {{bodega}}</h3>
+            </div>
+            <div class="card-body pt-4">
+
+    {% for k, v in conteo_prod_enTransito.items %}
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">
+                    <a href="{% url 'la_referencia' %}?idBodega={{id_bodega}}&refer={{k}}&elEstado=2">{{k}}</a>
+                </span>
+            </div>            
+        </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{v}}</div>
+    </div>
+    <!--end::Item-->
+    {% if not forloop.last %}
+    <!--begin::Separator-->
+    <div class="separator separator-dashed my-5"></div>
+    <!--end::Separator-->
+    {% endif %}
+    {% endfor %}
+            </div>
+        </div>
+        
     </div>
 </div>
 

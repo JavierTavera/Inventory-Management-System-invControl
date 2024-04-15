@@ -2,19 +2,55 @@
 
 {% block content %}
 <h1>Dashboard</h1>
+
+
+
+
+
+<div class="row gy-5 g-xl-10">
+    <div class="col-xl-4">
+        <div class="card">
+            
+            <div class="card-body pt-4">
+                
+                <!--begin::Item-->
+                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                <!--end::Item-->
+                
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="col-xl-8">
+      <div class="card">
+          
+          <div class="card-body pt-4">
+              <!--begin::Item-->
+              <canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
+              <!--end::Item-->
+              
+          </div>
+      </div>
+      
+  </div>
+</div>
+
+
 <div>
 
     <div>
-        <h3>Inventario por bodega:</h3>
-        <div class="row">{% for k, v in conteo_zipped %}
-                <div class="col-sm"><strong><u>Productos en {{k}}:</u></strong>  <! -- Productos en {{k}}: {{v}} -->
+        <h3>Todos los productos por referencia:</h3>
+        {% for k, v in conteo_zipped %}
+        <div class="row">
+                <div class="col-md"><strong><u>Productos en {{k}}:</u></strong>  <! -- Productos en {{k}}: {{v}} -->
                     <div>{% for k2, v2 in v.items %}
                         <div>{{k2}}: {{v2}}</div>
                         {% endfor %}
                     </div>
                 </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
 </div>
 <div>
@@ -29,4 +65,63 @@
         <input type="submit" value="Consulta" class="btn btn-primary">
     </form>
 </div>
+
+<script>
+    var xValues = ["Inflable", "Maleable", "Esfínter", "Prótesis", "Cintas"];
+    var yValues = [
+    {% for k, v in tipos_ordenados.items %} {{v}} {% if not forloop.last %}   ,  {% endif %} {% endfor %}
+    ];
+    var barColors = [
+      "#3e97ffd9",
+      "#f1416cd9",
+      "#50cd89d9",
+      "#ffc700d9",
+      "#7239ead9"
+    ];
+    
+    new Chart("myChart", {
+      type: "doughnut",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: "Total por tipo de producto"
+        }
+      }
+    });
+
+
+
+
+    const ctx = document.getElementById('myChart2');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ["Inflable", "Maleable", "Esfínter", "Prótesis", "Cintas"],
+      datasets: [{
+        label: 'Cantidad',
+        data: [
+        {% for k, v in tipos_ordenados.items %} {{v}} {% if not forloop.last %}   ,  {% endif %} {% endfor %}
+        ],
+        borderWidth: 1,
+        barThickness: 50
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+    </script>
+
 {% endblock content %}

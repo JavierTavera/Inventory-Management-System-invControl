@@ -27,10 +27,25 @@ def dashboard(request):
     # la_bodega = Bodega.objects.all().filter(nombre='Bogotá')
     print(current_user)
     los_productos = Producto.objects.all()
+    las_referencias = Referencia.objects.all()
+    tipos_prod = {}
     conteo_prod = {}
     # conteo_prod[""][""] = 0
     for prod in los_productos:
-        str_bodega = str(prod.IdBodega)
+        #tipos de producto
+        for ref in las_referencias:
+            if prod.IdReferencia == ref:
+                el_tipo = str(ref.tipo)
+                print('Tipo producto: ' + el_tipo)
+                print('Tipo producto: ' + str(ref.tipo_id))
+                if ref.tipo_id in tipos_prod.keys():
+                    tipos_prod[ref.tipo_id] += 1
+                else:
+                    tipos_prod[ref.tipo_id] = 1
+                break
+
+        # Conteo productos
+        str_bodega = el_tipo#str(prod.IdBodega)
         str_referencia = str(prod.IdReferencia)
         if str_bodega in conteo_prod.keys():
             if str_referencia in conteo_prod[str_bodega].keys():
@@ -40,11 +55,14 @@ def dashboard(request):
         else:
             conteo_prod[str_bodega] = {}
             conteo_prod[str_bodega][str_referencia] = 1
-        print(conteo_prod)
-        print(conteo_prod[str_bodega][str_referencia])
-        print(str_bodega)
-        print(prod.IdBodega_id)
+        # print(conteo_prod)
+        # print(conteo_prod[str_bodega][str_referencia])
+        # print(str_bodega)
+        # print(prod.IdBodega_id)
 
+    tipos_ordenados = dict(sorted(tipos_prod.items()))
+    print('tipos de producto:')
+    print(tipos_ordenados)
     prod_id = str(los_productos[1])
     print(prod_id)
 
@@ -53,7 +71,7 @@ def dashboard(request):
     producto_form = ProductoForm2(instance=producto_get)
     
     conteo_zipped = zip(conteo_prod.keys(), conteo_prod.values())
-    context = {'los_productos': los_productos, 'conteo_zipped': conteo_zipped, 'form': producto_form}
+    context = {'los_productos': los_productos, 'conteo_zipped': conteo_zipped, 'form': producto_form, 'tipos_ordenados': tipos_ordenados}
     return render(request, 'base/dashboard.html', context)
 
 def dashboards(request, pk):
@@ -126,6 +144,7 @@ def dashboard_producto(request, pk):
             # No hay productos
             return render(request, 'base/productos.html')
 
+        conteo_total = {}
         conteo_prod = {}
         conteo_prod_enTransito = {}
         str_referencia=""
@@ -150,6 +169,12 @@ def dashboard_producto(request, pk):
                 else:
                     conteo_prod_enTransito[str_referencia] = 1
 
+            if str_estado == 'En bodega' or str_estado == 'En tránsito':
+                if str_referencia in conteo_total.keys():
+                    conteo_total[str_referencia] += 1
+                else:
+                    conteo_total[str_referencia] = 1
+
         # Formulario bodegas:
         todas_bodegas = Bodega.objects.all()
         listado_bodegas = {}
@@ -157,7 +182,7 @@ def dashboard_producto(request, pk):
             listado_bodegas[bode.id] = bode.nombre
 
         context = {'los_productos': los_productos, 'conteo_prod': conteo_prod, 'conteo_prod_enTransito': conteo_prod_enTransito,
-                   'el_tipo_producto': tipo_prod[0], 'listado_bodegas': listado_bodegas, 'el_pk': pk}
+                   'conteo_total': conteo_total, 'el_tipo_producto': tipo_prod[0], 'listado_bodegas': listado_bodegas, 'el_pk': pk}
         return render(request, 'base/dashboard_producto.html', context)
     else:
         return render(request, 'base/productos.html')
@@ -303,6 +328,7 @@ def ingreso_manual(request, pk):
     pk=mk[1]
     current_user = request.user if request.user.is_authenticated else None
     form = ProductoForm(initial={'usuario': current_user, 'IdReferencia': pk, 'IdEstado_producto': 4, 'IdBodega': 1})
+    
     if request.method == 'POST':
         la_cantidad_manual = int(request.POST.get('cantidad_manual', ''))
             # la_cantidad_manual_nro = int(la_cantidad_manual)
@@ -321,7 +347,7 @@ def ingreso_manual(request, pk):
             return redirect('/ingreso_productos/'+str(mk[0])+'_/')
     else:
         la_cantidad_manual = 0
-    context = {'form': form, 'cantidad_ingresos': la_cantidad_manual}
+    context = {'form': form, 'cantidad_ingresos': la_cantidad_manual, 'ref': pk}
     return render(request, 'base/ingreso_productos/ingreso_manual.html', context)
 
 def ingreso_qr(request, pk):

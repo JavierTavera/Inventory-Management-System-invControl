@@ -3,41 +3,134 @@
 {% block content %}
 <h1>Inventario de todas las bodegas para {{el_tipo_producto}}:</h1>
 <br><br>
-<div>
-    <div>
-        <div class="row">
-                <div class="col-sm">
-                    <h3>Productos en bodegas</h3>
-                    {% for k, v in conteo_prod.items %}
-                    <strong><u>{{k}}:</u></strong> {{v}} <br><! -- Productos en {{k}}: {{v}} -->
-                    {% endfor %}
-                    <br>
-                </div>
-                <div class="col-sm">
-                    <h3>Productos en tránsito</h3>
-                    {% for k, v in conteo_prod_enTransito.items %}
-                    <strong><u>{{k}}:</u></strong> {{v}} <br><! -- Productos en {{k}}: {{v}} -->
-                    {% endfor %}
-                </div>
+
+
+<div class="row gy-5 g-xl-10">
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title align-items-start flex-column">Productos en bodegas</h3>
+            </div>
+            <div class="card-body pt-4">
+
+    {% for k, v in conteo_prod.items %}
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">{{k}}</span>
+            </div>            
         </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{v}}</div>
+    </div>
+    <!--end::Item-->
+    {% if not forloop.last %}
+    <!--begin::Separator-->
+    <div class="separator separator-dashed my-5"></div>
+    <!--end::Separator-->
+    {% endif %}
+    {% endfor %}
+                
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title align-items-start flex-column">Productos en tránsito</h3>
+            </div>
+            <div class="card-body pt-4">
+
+    {% for k, v in conteo_prod_enTransito.items %}
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">{{k}}</span>
+            </div>            
+        </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{v}}</div>
+    </div>
+    <!--end::Item-->
+    {% if not forloop.last %}
+    <!--begin::Separator-->
+    <div class="separator separator-dashed my-5"></div>
+    <!--end::Separator-->
+    {% endif %}
+    {% endfor %}
+                
+            </div>
+        </div>
+        
+    </div>
+
+
+
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title align-items-start flex-column">Total productos (bodegas + tránsito)</h3>
+            </div>
+            <div class="card-body pt-4">
+
+    {% for k, v in conteo_total.items %}
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">{{k}}</span>
+            </div>            
+        </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{v}}</div>
+    </div>
+    <!--end::Item-->
+    {% if not forloop.last %}
+    <!--begin::Separator-->
+    <div class="separator separator-dashed my-5"></div>
+    <!--end::Separator-->
+    {% endif %}
+    {% endfor %}
+                
+            </div>
+        </div>
+        
     </div>
 </div>
+
+
 <br><br><br>
 
-<div>
-    <form method="GET" action="/bodega_producto/">
-        {% csrf_token %}
-        <label for="nombre_bodega"><strong>Ir a bodega:</strong></label>
-        <select id="nom_bodega" name="nom_bodega" class="form-control" style="max-width: 300px;">
-            {% for k, v in listado_bodegas.items %}
-            <option value="{{k}}">{{v}}</option>
-            {% endfor %}
-        </select>
-        <input type="hidden" id="tipoProducto" name="tipoProducto" value="{{el_pk}}">
-        <input type="submit" value="Ir a bodega" class="btn btn-primary">
-    </form>
-    <br>
-</div>
 
+<div class="row gy-5 g-xl-10">
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title align-items-start flex-column">Ir a bodega</h3>
+            </div>
+            <div class="card-body pt-4">
+
+                <form method="GET" action="/bodega_producto/">
+                    {% csrf_token %}
+                    <select id="nom_bodega" name="nom_bodega" class="form-control" style="max-width: 300px;">
+                        {% for k, v in listado_bodegas.items %}
+                        <option value="{{k}}">{{v}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" id="tipoProducto" name="tipoProducto" value="{{el_pk}}">
+                    <br>
+                    <input type="submit" value="Ir a bodega" class="btn btn-primary">
+                </form>
+
+                
+            </div>
+        </div>
+
+    </div>
+</div>
+<br>
 
 {% endblock content %}
