@@ -23,4 +23,5 @@ urlpatterns = [
     path('recepcion_stock/', views.transferencias_stock, name="transferencias_stock"),
     path('ajuste_de_inventario/', views.ajuste_de_inventario),
     path('ordenes_de_ventas/', views.ordenes_de_ventas),
+    path('excel_on_click/', views.excel_on_click, name='excel_on_click'),
 ]

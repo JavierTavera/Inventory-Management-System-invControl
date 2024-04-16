@@ -95,9 +95,11 @@
     {% endif %}
     {% endfor %}
                 
+    <br>
+    <a href="{% url 'excel_on_click' %}?id_producto={{el_pk}}" class="btn btn-primary">Descargar Excel</a>
             </div>
         </div>
-        
+    
     </div>
 </div>
 

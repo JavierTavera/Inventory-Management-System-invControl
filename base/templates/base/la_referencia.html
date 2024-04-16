@@ -1,6 +1,13 @@
 {% extends 'main.html' %}
 
 {% block content %}
+
+{% if flag_post %}
+<div class="alert alert-success w-50 p-3" role="success">
+    {{canti_t}}  productos transferidos con <strong>éxito</strong>
+</div>
+{% endif %}
+
 <h1>Inventario de {{refNombre}} en {{bodega}} ({{estado}}):</h1>
 <br>
 
@@ -114,7 +121,7 @@
     <div class="d-flex flex-stack">
         <div class="d-flex align-items-center me-5">
             <div class="me-5">
-                <span class="text-gray-800 fw-bold text-hover-primary fs-6">Fecha de vencimiento</span>
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">Código QR</span>
             </div>            
         </div>
         <div class="text-gray-500 fw-bold fs-7 text-end">{{v.0}}</div>
@@ -128,10 +135,24 @@
     <div class="d-flex flex-stack">
         <div class="d-flex align-items-center me-5">
             <div class="me-5">
-                <span class="text-gray-800 fw-bold text-hover-primary fs-6">Cantidad</span>
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">Fecha de vencimiento</span>
             </div>            
         </div>
         <div class="text-gray-500 fw-bold fs-7 text-end">{{v.1}}</div>
+    </div>
+    <!--end::Item-->
+    <!--begin::Separator-->
+    <div class="separator separator-dashed my-5"></div>
+    <!--end::Separator-->
+
+    <!--begin::Item-->
+    <div class="d-flex flex-stack">
+        <div class="d-flex align-items-center me-5">
+            <div class="me-5">
+                <span class="text-gray-800 fw-bold text-hover-primary fs-6">Cantidad</span>
+            </div>            
+        </div>
+        <div class="text-gray-500 fw-bold fs-7 text-end">{{v.2}}</div>
     </div>
     <!--end::Item-->
                 
@@ -141,12 +162,13 @@
 
     </div>
 
-
+    {% if el_estado == "4" %}
+    
     <div class="col-xl-4">
         <div class="card bg-white" style="max-width: 30rem;">
     
             <div class="card-body pt-4">
-                <h1>Transferencia:</h1>
+                <h1>Transferencia de {{refID}} desde {{bodega}}:</h1>
                 <br>
             <form method="POST" action="">
                 {% csrf_token %}
@@ -161,18 +183,13 @@
                 <label for="cantidad_manual">Cantidad de productos a transferir:</label>
                     <input type="number" id="cantidad_manual" name="cantidad_manual" class="form-control" style="max-width: 300px;" placeholder="Ej: 3" min="0" max="{{cantidad_total}}">
                 <br>
-                <input type="submit" value="Consulta" class="btn btn-primary">
+                <input type="submit" value="Transferir" class="btn btn-primary">
             </form>
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
-
-
-
-
-
-
 
 
 

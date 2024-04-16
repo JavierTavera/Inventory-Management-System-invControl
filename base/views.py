@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Bodega, Proveedor, Referencia, Producto, TipoProducto, EstadoProducto
 from .forms import ReferenciaForm, ProductoForm, ProductoForm2, ProductoForm2_disabled, BodegaForm, TransferenciaForm
-from django.core.cache import cache
+# from django.core.cache import cache
+
+import pandas as pd
+from io import BytesIO
 
 items_p = [
     {'id': 1, 'name': 'Prótesis 1', 'lote': 'LOTE1', 'type': 'Prótesis', 'stock': 5, 'fecha_rec': '20-11-2023'},
@@ -93,7 +96,6 @@ def dashboards(request, pk):
         for prod in los_productos:
             str_bodega = str(prod.IdBodega)
             str_estado = str(prod.IdEstado_producto)
-            print(prod.IdEstado_producto)
             for refe in las_referencias:
                 if refe == prod.IdReferencia:
                     str_referencia = str(refe.id)
@@ -235,6 +237,38 @@ def bodega_producto(request):
 
 def la_referencia(request):
 
+    flag_post = False
+    # Si se hizo transferencia:
+    if request.method == 'POST':
+        flag_post = True
+        ids_a_transferir = Producto.objects.all().filter(IdReferencia=request.POST.get('IdReferencia'),
+                                                         IdEstado_producto=request.POST.get('IdEstado_producto'),
+                                                         IdBodega=request.POST.get('IdBodega'),
+                                                         codigoQR=request.POST.get('codigoQR'),
+                                                         lote=request.POST.get('lote'))
+        
+        print(ids_a_transferir)
+        print(request.POST.get('IdReferencia'))
+        ids = []
+        cantidad_ids = int(request.POST.get('cantidad_manual'))
+        instancia_IdBodega = Bodega.objects.get(id=int(request.POST.get('id_bodega')))
+        instancia_Estado = EstadoProducto.objects.get(id=2)
+        for id_s in ids_a_transferir:
+            if cantidad_ids > 0:
+                ids.append(str(id_s))
+                cantidad_ids -= 1
+                cambio_producto = Producto.objects.get(id=str(id_s))
+                print('antes')
+                print(cambio_producto.IdEstado_producto)
+                print(cambio_producto.IdBodega)
+                cambio_producto.IdBodega = instancia_IdBodega
+                cambio_producto.IdEstado_producto = instancia_Estado
+                cambio_producto.save()
+                print('después')
+                print(cambio_producto.IdEstado_producto)
+                print(cambio_producto.IdBodega)
+            else: break
+            
     referencia = request.GET.get('refer')
     id_bodega = request.GET.get('idBodega')
     el_estado = request.GET.get('elEstado')
@@ -243,7 +277,6 @@ def la_referencia(request):
     referencias_detalles = Referencia.objects.all().filter(id=referencia)
     estado = EstadoProducto.objects.all().filter(id=el_estado)
     los_productos = Producto.objects.all().filter(IdReferencia=referencia, IdBodega__id=id_bodega)
-    print(los_productos)
     if not los_productos:
         # No hay productos
         return render(request, 'base/productos.html')
@@ -254,9 +287,9 @@ def la_referencia(request):
     for prod in los_productos:
         cantidad_total += 1
         if not prod.lote in conteo_prod.keys():
-            conteo_prod[prod.lote] = [prod.fecha_vencimiento, 1]
+            conteo_prod[prod.lote] = [prod.codigoQR, prod.fecha_vencimiento, 1]
         else:
-            conteo_prod[prod.lote][1] += 1
+            conteo_prod[prod.lote][2] += 1
 
     
     refID = referencias_detalles[0].id
@@ -273,9 +306,12 @@ def la_referencia(request):
     listado_bodegas = {}
     for bode in todas_bodegas:
         listado_bodegas[bode.id] = bode.nombre
+
+        
     
     context = {'refID': refID, 'estado': estado[0], 'conteo_prod': conteo_prod, 'cantidad_total': cantidad_total, 'form': form,
-                'bodega': bodega[0], 'refNombre': refNombre, 'refProveedor': refProveedor, 'refTipo': refTipo, 'listado_bodegas': listado_bodegas}
+                'bodega': bodega[0], 'refNombre': refNombre, 'refProveedor': refProveedor, 'refTipo': refTipo, 'el_estado': el_estado,
+                'listado_bodegas': listado_bodegas, 'flag_post': flag_post, 'canti_t': request.POST.get('cantidad_manual')}
     return render(request, 'base/la_referencia.html', context)
 
 
@@ -479,3 +515,41 @@ def ajuste_de_inventario(request):
 
 def ordenes_de_ventas(request):
     return render(request, 'base/DeEjemplo/ordenes_de_ventas.html')
+
+
+def excel_on_click(request):
+    
+    tipo_producto = request.GET.get('id_producto')
+
+    los_productos = Producto.objects.all().filter(IdReferencia__tipo=tipo_producto)
+    referencias = {}
+
+    for prod in los_productos:
+        if prod.IdReferencia in referencias.keys():
+            referencias[prod.IdReferencia] += 1
+        else:
+            referencias[prod.IdReferencia] = 1
+
+    las_referencias = referencias.keys()
+    cantidades = referencias.values()
+
+    data = {
+        'Referencias': list(las_referencias),
+        'Cantidad total': list(cantidades)
+    }
+
+    # Create a DataFrame
+    df = pd.DataFrame(data)
+
+    
+
+    # Create Excel file from DataFrame
+    excel_file = BytesIO()
+    df.to_excel(excel_file, index=False)
+    excel_file.seek(0)
+
+    # Create HTTP response
+    response = HttpResponse(excel_file.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="sample_excel.xlsx"'
+
+    return response

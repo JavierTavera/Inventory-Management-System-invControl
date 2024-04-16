@@ -222,10 +222,10 @@ class TransferenciaForm(ModelForm):
         model = Producto
         fields = '__all__'
         labels = {
-            'IdReferencia': 'Referencia',
-            'IdEstado_producto': 'Estado producto',
-            'IdBodega': 'Bodega actual',
-            'codigoQR': 'codigo QR (Opcional)',
+            'IdReferencia': '',
+            'IdEstado_producto': '',
+            'IdBodega': '',
+            'codigoQR': 'codigo QR',
             'lote': 'Lote',
             'fecha_vencimiento': '',
             'usuario': ''
@@ -234,17 +234,17 @@ class TransferenciaForm(ModelForm):
             'IdReferencia': TextInput(attrs={
                 'class': "form-control",
                 'style': 'max-width: 300px;',
-                'disabled': 'True'
+                'hidden': ''
             }),
             'IdEstado_producto': Select(attrs={
                 'class': "form-control",
                 'style': 'max-width: 300px;',
-                'disabled': 'True'
+                'hidden': ''
             }),
             'IdBodega': Select(attrs={
                 'class': "form-control",
                 'style': 'max-width: 300px;',
-                'disabled': 'True'
+                'hidden': ''
             }),
             'codigoQR': TextInput(attrs={
                 'class': "form-control",
