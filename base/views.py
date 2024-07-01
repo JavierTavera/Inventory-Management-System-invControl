@@ -468,7 +468,7 @@ def transferencias_stock(request):
             if bode.IdReferencia in listado_en_transito.keys():
                 listado_en_transito[bode.IdReferencia] += 1
             else:
-                listado_en_transito[bode.IdReferencia] = 0
+                listado_en_transito[bode.IdReferencia] = 1
         en_transito_zipped = zip(listado_en_transito.keys(), listado_en_transito.values())
     
         context = {'form': form, 'bodega': bodega[0], 'bodegas_zipped': bodegas_zipped, 'en_transito_zipped': en_transito_zipped}
